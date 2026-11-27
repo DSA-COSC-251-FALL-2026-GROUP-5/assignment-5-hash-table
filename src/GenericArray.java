@@ -1,3 +1,5 @@
+import java.math.BigInteger;
+
 abstract class GenericArray<T extends Comparable<T>> {
   // this class will contain methods that will be inherited by both OrderedArray
   // and UnorderedArray because they share a similar constructor, and utility
@@ -139,8 +141,12 @@ abstract class GenericArray<T extends Comparable<T>> {
     // a utility function used as a heuristic to increment the size of the array if
     // we've inserted too many items
 
-    // for now, we'll just arbitrarily resize it to twice the current size.
-    return 2 * size;
+    //return 2 * size;
+
+    // for now, we'll resize it to roughly twice the current size (but prime)
+    return BigInteger.valueOf(size * 2L)
+                            .nextProbablePrime()
+                            .intValueExact();
   }
 
   int binarySearch(T x) {

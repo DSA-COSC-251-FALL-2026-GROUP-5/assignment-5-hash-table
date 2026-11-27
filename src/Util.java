@@ -1,4 +1,6 @@
 class Util{
+  public static int pDefault = 31;
+  public static int mDefault = 1000000007;
   public static long hash(String key, int p, int m){
     // this is a simple hashing algorithm called the polynomial rolling hash
     // p should ideally be prime
