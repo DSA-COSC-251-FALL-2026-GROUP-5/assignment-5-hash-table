@@ -12,10 +12,10 @@ class Util{
     //
     // When we have the expression:
     // a b equiv 0 (mod m)
-    long hash = 0;
+    long hashValue = 0;
     for (int i = 0; i < key.length(); i++){
-      hash = (hash*p + key.charAt(i)) % m;
+      hashValue = (hashValue*p + key.charAt(i)) % m;
     }
-    return hash;
+    return hashValue;
   }
 }

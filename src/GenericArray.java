@@ -1,30 +1,15 @@
 import java.math.BigInteger;
 
 abstract class GenericArray<T extends Comparable<T>> {
-  // this class will contain methods that will be inherited by both OrderedArray
-  // and UnorderedArray because they share a similar constructor, and utility
-  // functions such
-  // as .show and more. For more information, the github link is here:
-  // https://github.com/DSA-COSC-251-FALL-2026-GROUP-5/assignment-1-array
+    protected Object[] arr;
+    protected int capacity;
+    protected int occupiedAmount;
 
-  // protected keyword is used because we want the child classes to inherit it
-  protected T[] arr;
-  protected int capacity;
-  protected int occupiedAmount;
-
-  @SuppressWarnings("unchecked")
-  GenericArray(int size) {
-    // 1. creating the Integer arr[]. java already sets every integer to null when
-    // initializing.
-
-    // 2. constructor accepts an integer called size (we use int and not Integer
-    // because we don't want the user to input a null when initializing the array)
-    arr = (T[]) new Comparable[size];
-    // because the occupied array is contiguous, we can keep track of the capacity
-    // so that insertion is faster
-    occupiedAmount = 0;
-    capacity = size;
-  }
+    GenericArray(int size) {
+        arr = new Object[size];
+        capacity = size;
+        occupiedAmount = 0;
+    }
 
   // UnorderedArray can just insert at the end, however, OrderedArray must insert
   // in order
@@ -59,17 +44,13 @@ abstract class GenericArray<T extends Comparable<T>> {
     return true;
   }
 
-  T get(int index) throws IndexOutOfBoundsException {
-    // 6. get based on index doesn't differ across ordered and unordered array.
-
-    // the time complexity is O(1) because an array is contiguous in memory, and if
-    // the type of the array is known (since java is a statically typed language, it
-    // is known), we can internally do some pointer arithmetic to get the location
-    // of the address of the ith element and lookup its value.
-    if (index >= arr.length || index < 0) {
+  @SuppressWarnings("unchecked")
+  T get(int index) {
+    if (index < 0 || index >= capacity) {
       throw new IndexOutOfBoundsException();
     }
-    return arr[index];
+
+    return (T) arr[index];
   }
 
   int size() {
@@ -85,20 +66,17 @@ abstract class GenericArray<T extends Comparable<T>> {
     return occupiedAmount;
   }
 
-  @SuppressWarnings("unchecked")
   void resize(int newSize) {
-    // 9. the cannonical way to do this is to first create the new array
-    T[] newArr = (T[]) new Comparable[newSize];
-    // we copy everything up to either the capacity, or the newSize if we were to
-    // shrink our array
+    Object[] newArr = new Object[newSize];
 
-    // Since we're copying everything, this has a time complexity of O(n)
-    capacity = newSize;
     occupiedAmount = Math.min(newSize, occupiedAmount);
+
     for (int i = 0; i < occupiedAmount; i++) {
       newArr[i] = arr[i];
     }
+
     arr = newArr;
+    capacity = newSize;
   }
 
   void leftShift(int index) {
@@ -149,60 +127,28 @@ abstract class GenericArray<T extends Comparable<T>> {
                             .intValueExact();
   }
 
-  int binarySearch(T x) {
-    int leftPtr = 0;
-    int rightPtr = occupiedAmount;
-    // we're searching in the range of [0, occupiedAmount). The reason for this
-    // asymmetry is because, we want the index to be the same as doing linear search
-    // of x on an ordered array, that is:
-    // - we want the first instance of x if it exists
-    // - if it doesn't exist, we want the index of the next greatest thing (which
-    // works the same for the edge case when x > max(arr))
-
-    int midPtr;
-    while (leftPtr < rightPtr) {
-      // when they're equal, we have something like: [leftPtr, leftPtr), meaning that
-      // it doesn't exists because that range is just the null set. In our case
-      // though, we will terminate and return the value of leftPtr.
-
-      midPtr = (leftPtr + rightPtr) / 2;
-      // we will update leftPtr such that it's somewhat lazy, meaning that it will
-      // only move when we know that arr[midPtr] < x
-      if (arr[midPtr].compareTo(x) < 0) {
-        leftPtr = midPtr + 1;
-        // this means that there's actually an upper bound on arr[leftPtr], that is,
-        // arr[leftPtr] <= x through the whole algorithm, and in the case that
-        // arr[leftPtr] == x, it has to be case that it's the first instance because the
-        // step before that must have had arr[midPtr] < x, but then, arr[midPtr + 1] ==
-        // x. After that happens, leftPtr will never be updated again since this
-        // condition would never be satisifed (and this condition is the only place
-        // where leftPtr gets updated).
+  @Override
+  public String toString(){
+    String returnString = "[";
+    for (int i = 0; i < arr.length; i++) {
+      if (i > 0){
+        returnString = returnString.concat(", ");
+      }
+      if (arr[i] == null) {
+        returnString = returnString.concat("null");
       } else {
-        // if arr[midPtr] >= x, then we still want to preserve the case that arr[midPtr]
-        // == x. doing rightPtr = midPtr - 1 would be too aggressive because it might be
-        // the case that arr[midPtr - 1] < x.
-        rightPtr = midPtr;
+        returnString = returnString.concat("%s".formatted(arr[i]));
       }
     }
-    return leftPtr;
+
+    returnString = returnString.concat("]");
+    return returnString;
   }
 
   void printArray() {
     // an extra utility function for debugging and testing purposes, which just
     // prints the entire array as a string to standard out
-    if (arr.length == 0) {
-      System.out.println();
-    } else {
-      System.out.print(arr[0]);
-      for (int i = 1; i < arr.length; i++) {
-        if (arr[i] == null) {
-          System.out.print(", null");
-        } else {
-          System.out.printf(", %s", arr[i]);
-        }
-      }
-      System.out.println();
-    }
+    System.out.println(toString());
   }
 
   void printInfo() {

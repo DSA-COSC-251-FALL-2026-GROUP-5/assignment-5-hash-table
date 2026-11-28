@@ -33,4 +33,6 @@ When we do quadratic probing: $f(k_0, i) = i^2$
 
 When we do double hashing: $f(k_0, i) = i \cdot h_2(k)$ with $h_2(k) = c - (h_1(k) \mod m)$ for some prime $c$
 
+## Faults in Open Addressing
+
 

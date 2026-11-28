@@ -23,13 +23,14 @@ public class UnorderedArray<T extends Comparable<T>> extends GenericArray<T> {
     arr[index] = x;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   int find(T x) {
     // 5.1. find using an unordered array requires linear search, which requires
     // O(n) time complexity
     // WARNING: find will also not work because of the addition of insertAt
     for (int i = 0; i < occupiedAmount; i++) {
-      if (arr[i].compareTo(x) == 0) {
+      if (((T[]) arr)[i].compareTo(x) == 0) {
         // we find the first occurance
         return i;
       }

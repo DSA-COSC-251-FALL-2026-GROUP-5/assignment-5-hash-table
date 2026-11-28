@@ -4,4 +4,3 @@ interface HashTable<T> {
   public void delete(String key);
   public String toString();
 }
-
